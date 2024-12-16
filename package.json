@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node backend/src/server.js",
     "start": "nodemon backend/src/server.js",
-    "build": "cd frontend && npm install vite --save-dev && npm install && ./node_modules/.bin/vite build && cd .. && npx prisma generate --schema=./backend/src/prisma/schema.prisma"
+    "build": "npm install && cd frontend && npm install && npm run build && cd .. && npx prisma generate --schema=./backend/src/prisma/schema.prisma"
   },
   "author": "sunil",
   "license": "ISC",
