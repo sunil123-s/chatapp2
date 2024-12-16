@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: chat-app-frontend
-    env: node
-    buildCommand: npm install --include=dev && npx vite build
-    startCommand: npm run preview
-    envVars:
-      - key: NODE_ENV
-        value: production
