@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id         String      @id @default(cuid())
+  fullName   String?
+  userName   String      @unique
+  password   String
+  profileImg String?     @default("https://static.vecteezy.com/system/resources/previews/009/734/564/non_2x/default-avatar-profile-icon-of-social-media-user-vector.jpg")
+  isAdmin    Boolean     @default(false)
+  messages   Message[]
+  chats      Chat[]      @relation("ChatUsers")
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  
+  Message Message[] @relation("ReadMessages")
+  Chat Chat[]
+}
+
+model Chat {
+  id             String      @id @default(cuid())
+  chatName       String?
+  isGroupChat    Boolean     @default(false)
+  users          User[]      @relation("ChatUsers")
+  latestMessage  Message?    @relation("LatestMessage", fields: [latestMessageId], references: [id])
+  latestMessageId String?
+  groupAdmin     User?       @relation(fields: [groupAdminId], references: [id])
+  groupAdminId   String?
+  messages       Message[]   @relation("ChatMessages")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model Message { 
+  id        String    @id @default(cuid())
+  sender    User      @relation(fields: [senderId], references: [id])
+  senderId  String
+  content   String
+  chat      Chat      @relation("ChatMessages", fields: [chatId], references: [id])
+  chatId    String
+  readBy    User[]    @relation("ReadMessages")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  Chat Chat[] @relation("LatestMessage")
+}
+
